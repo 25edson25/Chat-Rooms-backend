@@ -12,14 +12,18 @@ function verifySocket (socket, next) {
             next(new Error("invalid token"))
         else {
             socket.person = await Person.findByPk(decoded.id)
-            socket.room = await Room.findByPk(decoded.room)
+            socket.room = await Room.findByPk(socket.person.room)
+
+            if (!socket.room)
+                next(new Error("user not in a room"))
+
             next()
         }
     })
 }
 
 function handlers (io, socket) {
-    
+    socket.join(socket.room.code)
     socket.on('message', async (message) => {
         const newMessage = await Message.create({
             message,
@@ -27,7 +31,7 @@ function handlers (io, socket) {
             room: socket.person.room
         })
 
-        socket.emit('response', {
+        io.to(socket.room.code).emit('response', {
             message,
             sender: socket.person.name,
             senderId: socket.person.id,

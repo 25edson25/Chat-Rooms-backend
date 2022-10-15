@@ -69,20 +69,17 @@ async function destroy(req, res) {
 }
 
 async function enterRoom(req, res) {
-    if (req.person.id != req.params.personId && !req.person.isAdmin)
-            return res.status(401).json({message: "unauthorized"})
-
-    const person = await Person.findByPk(req.params.personId)
+    const person = await Person.findByPk(req.person.id)
 
     if (!person)
         return res.status(404).json({message: "person not found"})
     
-    const room = await Room.findByPk(req.params.roomId)
+    const room = await Room.findOne({where: {code: req.params.roomCode}})
 
     if (!room)
         return res.status(404).json({message: "room not found"})
 
-    person.room = parseInt(req.params.roomId)
+    person.room = parseInt(room.id)
     person.save()
     
     res.json(person)

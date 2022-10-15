@@ -14,7 +14,7 @@ routes.get(`/person`, auth.verifyJWT, Person.findAll)
 routes.get(`/person/:id`, auth.verifyJWT, Person.findOne)
 routes.put(`/person/:id`, auth.verifyJWT, Person.update)
 routes.delete(`/person/:id`, auth.verifyJWT, Person.destroy)
-routes.put(`/person/:personId/enter/room/:roomId`, auth.verifyJWT, Person.enterRoom)
+routes.put(`/enter/room/:roomCode`, auth.verifyJWT, Person.enterRoom)
 
 // Room
 routes.post(`/room`, auth.verifyJWT, Room.create)
