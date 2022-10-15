@@ -5,7 +5,7 @@ const routes = require("./routes")
 const db = require('./db')
 const cors = require('cors')
 const helmet = require('helmet')
-const {socketIoCallback, verifySocket} = require("./services/socket")
+const {handlers, verifySocket} = require("./services/socket")
 const http = require('http').Server(app)
 const { Server } = require("socket.io")
 
@@ -16,7 +16,12 @@ const io = new Server (http, {
 })
 
 io.use(verifySocket)
-io.on('connection', socketIoCallback)
+
+const onConnection = (socket) => {
+    handlers(io, socket)
+}
+
+io.on('connection', onConnection)
 
 app.use(helmet())
 app.use(cors())

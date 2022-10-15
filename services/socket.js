@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken')
 const dotenv = require('dotenv/config')
 const Message = require('../models/message')
 const Person = require('../models/person')
+const Room = require('../models/room')
 
 function verifySocket (socket, next) {
     const token = socket.handshake.auth.token.split(" ")[1]
@@ -11,14 +12,14 @@ function verifySocket (socket, next) {
             next(new Error("invalid token"))
         else {
             socket.person = await Person.findByPk(decoded.id)
+            socket.room = await Room.findByPk(decoded.room)
             next()
         }
     })
 }
 
-function socketIoCallback (socket) {
-    console.log(`user ${socket.person.name} connected`)
-
+function handlers (io, socket) {
+    
     socket.on('message', async (message) => {
         const newMessage = await Message.create({
             message,
@@ -26,7 +27,7 @@ function socketIoCallback (socket) {
             room: socket.person.room
         })
 
-        socket.broadcast.emit('response', {
+        socket.emit('response', {
             message,
             sender: socket.person.name,
             senderId: socket.person.id,
@@ -35,4 +36,4 @@ function socketIoCallback (socket) {
     })
 }
 
-module.exports = {socketIoCallback, verifySocket}
+module.exports = {handlers, verifySocket}
