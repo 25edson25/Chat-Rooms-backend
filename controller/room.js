@@ -37,7 +37,7 @@ async function findOne(req, res) {
 }
 
 async function update(req, res) {
-    if (!person.isAdmin)
+    if (!req.person.isAdmin)
             return res.status(401).json({message: "unauthorized"})
     try {    
         const room = await Room.findByPk(req.params.id)
@@ -50,16 +50,16 @@ async function update(req, res) {
 }
 
 async function destroy(req, res) {
-    if (!person.isAdmin)
+    if (!req.person.isAdmin)
             return res.status(401).json({message: "unauthorized"})
             
     try {    
         const room = await Room.findByPk(req.params.id)
         room.destroy()
-        res.send("sucess")
+        res.json({message: "sucess"})
     }
     catch (err) {
-        res.status(404).json("room not found")
+        res.status(404).json({message: "room not found"})
     }
 }
 

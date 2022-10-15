@@ -18,20 +18,18 @@ const Message = database.define('Message', {
 })
 
 Message.belongsTo(Person, {
-    foreignKey: 'sender',
+    as: 'Sender',
     allowNull: false
 })
 Person.hasMany(Message, {
-    foreignKey: 'sender',
+    as: 'Sender',
     allowNull: false
 })
 
 Message.belongsTo(Room, {
-    foreignKey: 'room',
     allowNull: false
 })
 Room.hasMany(Message, {
-    foreignKey: 'room',
     allowNull: false
 })
 

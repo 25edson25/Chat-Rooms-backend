@@ -79,7 +79,7 @@ async function enterRoom(req, res) {
     if (!room)
         return res.status(404).json({message: "room not found"})
 
-    person.room = parseInt(room.id)
+    person.setRoom(room)
     person.save()
     
     res.json(person)

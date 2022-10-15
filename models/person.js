@@ -30,11 +30,7 @@ const Person = database.define('Person', {
     }
 })
 
-Person.belongsTo(Room, {
-    foreignKey: 'room',
-})
-Room.hasMany(Person, {
-    foreignKey: 'room'
-})
+Person.belongsTo(Room)
+Room.hasMany(Person)
 
 module.exports = Person

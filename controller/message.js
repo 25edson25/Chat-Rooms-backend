@@ -7,14 +7,15 @@ async function create(req, res) {
 
         if (!person)
             return res.status(404).json({message: "person not found"})
-        req.body.sender = person.id
-        
-        if (!person.room)
+
+        const room = await person.getRoom()
+        if (!room)
             return res.status(500).json({message: "Person not in a room"})
 
-        req.body.room = person.room
-
+        req.body.SenderId = person.id
+        req.body.RoomId = room.id
         const newMessage = await Message.create(req.body)
+
         res.json(newMessage)
     }
     catch (err) {
