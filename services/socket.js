@@ -26,7 +26,7 @@ function verifySocket (socket, next) {
                     password
                 })
             }
-            catch (err) {
+            catch (error) {
                 return next(new Error("try again, duplicated code"))
             }
         else {
@@ -48,19 +48,32 @@ function verifySocket (socket, next) {
 
 function handlers (io, socket) {
     socket.join(socket.room.code)
+    console.log(io.sockets.adapter.rooms.get(socket.room.code).size)
 
     socket.on('message', async (message) => {
         const newMessage = await Message.create({
             message,
-            sender: socket.person.id,
-            room: socket.person.room
+            SenderId: socket.person.id,
+            RoomId: socket.room.id
         })
 
         io.to(socket.room.code).emit('response', {
             message,
-            sender: socket.person.name,
+            senderName: socket.person.name,
             senderId: socket.person.id,
             hour: newMessage.createdAt
+        })
+    })
+    socket.on('disconnect', (reason) => {
+        if (!io.sockets.adapter.rooms.get(socket.room.code)) {
+            Message.destroy({where:{RoomId: socket.room.id}})
+            Room.destroy({where:{code: socket.room.code}})
+        }
+        
+        io.to(socket.room.code).emit('user_has_left', {
+            message: `${socket.person.name} saiu do chat`,
+            sender: socket.person.name,
+            senderId: socket.person.id,
         })
     })
 }
