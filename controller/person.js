@@ -1,6 +1,5 @@
-const Person = require('../models/person')
+const {Person, Room} = require('../models/index')
 const bycript = require('bcryptjs')
-const Room = require('../models/room')
 
 async function create(req, res) {
     try {

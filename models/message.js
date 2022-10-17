@@ -1,7 +1,5 @@
 const Sequelize = require('sequelize')
 const database = require('../db')
-const Person = require('./person')
-const Room = require('./room')
 
 const Message = database.define('Message', {
     id: {
@@ -15,22 +13,6 @@ const Message = database.define('Message', {
         type: Sequelize.TEXT,
         allowNull: false
     }
-})
-
-Message.belongsTo(Person, {
-    as: 'Sender',
-    allowNull: false
-})
-Person.hasMany(Message, {
-    as: 'Sender',
-    allowNull: false
-})
-
-Message.belongsTo(Room, {
-    allowNull: false
-})
-Room.hasMany(Message, {
-    allowNull: false
 })
 
 module.exports = Message

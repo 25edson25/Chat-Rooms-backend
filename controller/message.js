@@ -1,5 +1,4 @@
-const Message = require('../models/message')
-const Person = require('../models/person')
+const {Person, Message} = require('../models/index')
 
 async function create(req, res) {
     try {

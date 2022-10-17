@@ -1,6 +1,5 @@
 const Sequelize = require('sequelize')
 const database = require('../db')
-const Room = require('./room')
 
 const Person = database.define('Person', {
     id: {
@@ -29,8 +28,5 @@ const Person = database.define('Person', {
         default: false
     }
 })
-
-Person.belongsTo(Room)
-Room.hasMany(Person)
 
 module.exports = Person

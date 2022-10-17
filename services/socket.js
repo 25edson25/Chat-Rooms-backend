@@ -1,8 +1,6 @@
 const jwt = require('jsonwebtoken')
 const dotenv = require('dotenv/config')
-const Message = require('../models/message')
-const Person = require('../models/person')
-const Room = require('../models/room')
+const {Person, Room, Message} = require('../models/index')
 const generateCode = require('../services/generateCode')
 
 function verifySocket (socket, next) {
@@ -48,7 +46,12 @@ function verifySocket (socket, next) {
 
 function handlers (io, socket) {
     socket.join(socket.room.code)
-    console.log(io.sockets.adapter.rooms.get(socket.room.code).size)
+
+    io.to(socket.room.code).emit('has_entered', {
+        message: `${socket.person.name} has entered the room`,
+        sender: socket.person.name,
+        senderId: socket.person.id, 
+    })
 
     socket.on('message', async (message) => {
         const newMessage = await Message.create({
@@ -70,8 +73,8 @@ function handlers (io, socket) {
             Room.destroy({where:{code: socket.room.code}})
         }
         
-        io.to(socket.room.code).emit('user_has_left', {
-            message: `${socket.person.name} saiu do chat`,
+        io.to(socket.room.code).emit('has_left', {
+            message: `${socket.person.name} has left the room`,
             sender: socket.person.name,
             senderId: socket.person.id,
         })

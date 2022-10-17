@@ -1,4 +1,4 @@
-const Room = require('../models/room')
+const {Room} = require('../models/index')
 const generateCode = require('../services/generateCode')
 
 async function create(req, res) {

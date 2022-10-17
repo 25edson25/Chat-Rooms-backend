@@ -1,7 +1,7 @@
 const dotenv = require('dotenv/config')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
-const Person = require('../models/person')
+const {Person} = require('../models/index')
 
 async function login (req, res) {
     const person = await Person.findOne({where: {email: req.body.email}})
