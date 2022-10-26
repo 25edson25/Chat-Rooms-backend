@@ -3,13 +3,22 @@ const bycript = require('bcryptjs')
 
 async function create(req, res) {
     try {
+        if(!req.body.name)
+            return res.status(400).json({message:"name is required"})
+         
+        if(!req.body.email)
+            return res.status(400).json({message:"email is required"})
+
+        if(!req.body.password)
+            return res.status(400).json({message:"password is required"})
+
         req.body.password = bycript.hashSync(req.body.password)
         req.body.isAdmin = false
         const newPerson = await Person.create(req.body)
-        res.json(newPerson)
+        res.json({message: 'ok'})
     }
     catch (err) {
-        res.json(err)
+        res.status(409).json({message:"email already in use"})
     }
 }
 

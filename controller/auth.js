@@ -4,27 +4,31 @@ const bcrypt = require('bcryptjs')
 const {Person} = require('../models/index')
 
 async function login (req, res) {
-    const person = await Person.findOne({where: {email: req.body.email}})
+    const findedPerson = await Person.findOne({where: {email: req.body.email}})
 
-    if (!person) 
+    if (!findedPerson) 
         return res.status(404).json({message: "user not found"})
 
-    if (!bcrypt.compareSync(req.body.password, person.password))
+    if (!bcrypt.compareSync(req.body.password, findedPerson.password))
         return res.status(401).json({message: "incorrect password"})
+
+    const person = {
+        id: findedPerson.id,
+        name: findedPerson.name,
+        email: findedPerson.email,
+        isAdmin: findedPerson.isAdmin
+    }
 
     const token = jwt.sign(
         {
-            id: person.id,
-            name: person.name,
-            email: person.email,
-            password: person.password,
-            isAdmin: person.isAdmin
+            ... person,
+            password: findedPerson.password
         },
         process.env.SECRET,
         {
             expiresIn: 2400
         })
-    res.json({token})
+    res.json({person, token})
 }
 
 async function verifyJWT (req, res, next) {
