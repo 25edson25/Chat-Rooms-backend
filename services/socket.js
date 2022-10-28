@@ -73,6 +73,7 @@ function handlers (io, socket) {
         })
 
         io.to(socket.room.code).emit('response', {
+            id: newMessage.id,
             message,
             senderName: socket.person.name,
             senderId: socket.person.id,
