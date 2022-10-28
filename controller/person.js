@@ -55,7 +55,10 @@ async function update(req, res) {
     try {    
         const person = await Person.findByPk(req.params.id)
         person.update(req.body)
-        res.json(person)
+        res.json({
+            id: person.id,
+            name: person.name
+        })
     }
     catch (err) {
         res.status(404).json({message: "person not found"})

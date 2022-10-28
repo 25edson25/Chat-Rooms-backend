@@ -9,8 +9,6 @@ function verifySocket (socket, next) {
     const password = socket.handshake.query.password
     const roomName = socket.handshake.query.name
 
-    console.log({token, code, password, roomName})
-
     jwt.verify(token, process.env.SECRET, async (err, decoded) => {
         if (err)
             return next(new Error("invalid token"))
@@ -60,7 +58,8 @@ function handlers (io, socket) {
     io.to(socket.room.code).emit('has_entered', {
         message: `${socket.person.name} has entered the room`,
         senderName: socket.person.name,
-        senderId: socket.person.id, 
+        senderId: socket.person.id,
+        roomCode: socket.room.code
     })
 
     socket.on('message', async (message) => {
