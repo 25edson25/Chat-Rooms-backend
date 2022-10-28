@@ -64,4 +64,18 @@ async function destroy(req, res) {
     }
 }
 
-module.exports = {create, findAll, findOne, update, destroy}
+async function roomMessages(req, res) {
+    const person = await Person.findByPk(req.person.id)
+
+    if (!person.RoomId)
+        return res.status(500).json({message: "person not in a room"})
+
+    if (!person.isAdmin & (await person.getRoom()).code == req.params.roomCode)
+        return res.status(401).json({message: "unauthorized"})
+
+    const messages = await Message.findAll({where: {RoomId: person.RoomId}})
+
+    res.json(messages)
+}
+
+module.exports = {create, findAll, findOne, update, destroy, roomMessages}

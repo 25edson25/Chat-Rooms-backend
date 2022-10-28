@@ -63,6 +63,9 @@ function handlers (io, socket) {
     })
 
     socket.on('message', async (message) => {
+        if (!message)
+            return socket.emit('error', {message: "message can't be empty"})
+
         const newMessage = await Message.create({
             message,
             SenderId: socket.person.id,

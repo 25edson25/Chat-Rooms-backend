@@ -29,6 +29,6 @@ routes.get(`/message`, auth.verifyJWT, Message.findAll)
 routes.get(`/message/:id`, auth.verifyJWT, Message.findOne)
 routes.put(`/message/:id`, auth.verifyJWT, Message.update)
 routes.delete(`/message/:id`, auth.verifyJWT, Message.destroy)
-routes.get(`/room/:id/message`, auth.verifyJWT)
+routes.get(`/room/:roomCode/message`, auth.verifyJWT, Message.roomMessages)
 
 module.exports = routes

@@ -54,7 +54,7 @@ async function update(req, res) {
 
     try {    
         const person = await Person.findByPk(req.params.id)
-        person.update(req.body)
+        person.update(req.body.name)
         res.json({
             id: person.id,
             name: person.name
