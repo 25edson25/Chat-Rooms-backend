@@ -1,4 +1,5 @@
 const {Person, Message} = require('../models/index')
+const sequelize = require('../db')
 
 async function create(req, res) {
     try {
@@ -73,7 +74,19 @@ async function roomMessages(req, res) {
     if (!person.isAdmin & (await person.getRoom()).code != req.params.roomCode)
         return res.status(401).json({message: "unauthorized"})
 
-    const messages = await Message.findAll({where: {RoomId: person.RoomId}})
+    const messages = await Message.findAll({
+        attributes: ['id', 'message',
+            [sequelize.literal('Sender.name'), 'senderName'],
+            [sequelize.literal('Sender.id'), 'senderId'],
+            ['createdAt', 'hour']
+        ],
+        where: {RoomId: person.RoomId},
+        include: {
+            model: Person, as: 'Sender',
+            attributes: []
+        },
+        raw: true
+    })
 
     res.json(messages)
 }
