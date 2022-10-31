@@ -13,7 +13,7 @@ async function create(req, res) {
             return res.status(500).json({message: "Person not in a room"})
 
         req.body.SenderId = person.id
-        req.body.RoomId = room.id
+        req.body.RoomId = room.idb
         const newMessage = await Message.create(req.body)
 
         res.json(newMessage)

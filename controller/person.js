@@ -52,9 +52,15 @@ async function update(req, res) {
     if (req.person.id != req.params.id && !req.person.isAdmin)
             return res.status(401).json({message: "unauthorized"})
 
-    try {    
+    if (!req.body.name)
+        return res.status(400).json({message:"name can't be empty"})
+
+    try {
         const person = await Person.findByPk(req.params.id)
-        person.update(req.body.name)
+       
+        person.name = req.body.name
+        await person.save()
+    
         res.json({
             id: person.id,
             name: person.name

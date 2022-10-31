@@ -14,7 +14,7 @@ function verifySocket (socket, next) {
             return next(new Error("invalid token"))
 
         socket.person = await Person.findByPk(decoded.id)
-
+        
         if (!socket.person)
             return next(new Error("user not found"))
 

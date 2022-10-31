@@ -1,12 +1,13 @@
 {
-  "name": "test",
+  "name": "Chat-Rooms-Backend",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
   },
-  "author": "",
+  "author": "Edson-de-Souza-Sales",
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",
@@ -14,7 +15,6 @@
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "express": "^4.18.1",
-    "firebase-tools": "^11.14.0",
     "helmet": "^6.0.0",
     "jsonwebtoken": "^8.5.1",
     "mysql2": "^2.3.3",
