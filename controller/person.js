@@ -55,20 +55,18 @@ async function update(req, res) {
     if (!req.body.name)
         return res.status(400).json({message:"name can't be empty"})
 
-    try {
-        const person = await Person.findByPk(req.params.id)
-       
-        person.name = req.body.name
-        await person.save()
-    
-        res.json({
-            id: person.id,
-            name: person.name
-        })
-    }
-    catch (err) {
-        res.status(404).json({message: "person not found"})
-    }
+    const person = await Person.findByPk(req.params.id)
+
+    if(!person)
+        return res.status(404).json({message: "person not found"})
+
+    person.name = req.body.name
+    await person.save()
+
+    res.json({
+        id: person.id,
+        name: person.name
+    })
 }
 
 async function destroy(req, res) {

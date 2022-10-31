@@ -80,10 +80,12 @@ function handlers (io, socket) {
             hour: newMessage.createdAt
         })
     })
-    socket.on('disconnect', (reason) => {
-        if (!io.sockets.adapter.rooms.get(socket.room.code)) {
-            Message.destroy({where:{RoomId: socket.room.id}})
-            Room.destroy({where:{code: socket.room.code}})
+    socket.on('disconnect', async (reason) => {
+        const usersConnected = io.sockets.adapter.rooms.get(socket.room.code)
+
+        if (!usersConnected) {
+            await Message.destroy({where:{RoomId: socket.room.id}})
+            await Room.destroy({where:{code: socket.room.code}})
         }
         
         io.to(socket.room.code).emit('has_left', {
