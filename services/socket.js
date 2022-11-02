@@ -39,8 +39,7 @@ function verifySocket (socket, next) {
 
             if (!room)
                 return next(new Error("room not found"))
-            console.log(room.password)
-            console.log(password)
+        
             if (room.password && room.password != password)
                 return next(new Error("incorrect password"))
 
@@ -51,6 +50,8 @@ function verifySocket (socket, next) {
         next()
     })
 }
+
+var timeoutId;
 
 function handlers (io, socket) {
     socket.join(socket.room.code)
@@ -80,19 +81,35 @@ function handlers (io, socket) {
             hour: newMessage.createdAt
         })
     })
-    socket.on('disconnect', async (reason) => {
-        const usersConnected = io.sockets.adapter.rooms.get(socket.room.code)
 
-        if (!usersConnected) {
-            await Message.destroy({where:{RoomId: socket.room.id}})
-            await Room.destroy({where:{code: socket.room.code}})
+    socket.on('reconnected', () => {
+        clearTimeout(timeoutId)
+    })
+    
+    socket.on('disconnect', async (reason) => {
+        const hasUsersConnected = io.sockets.adapter.rooms.get(socket.room.code)? true:false
+
+        async function removeUserFromRoom() {
+            console.log("apagando")
+            if (!hasUsersConnected) {
+                await Message.destroy({where:{RoomId: socket.room.id}})
+                await Room.destroy({where:{code: socket.room.code}})
+            }
+            
+            io.to(socket.room.code).emit('has_left', {
+                message: `${socket.person.name} has left the room`,
+                senderName: socket.person.name,
+                senderId: socket.person.id
+            })
         }
-        
-        io.to(socket.room.code).emit('has_left', {
-            message: `${socket.person.name} has left the room`,
-            senderName: socket.person.name,
-            senderId: socket.person.id,
-        })
+
+        if (reason == "transport close") {
+            timeoutId = setTimeout(() => {
+                removeUserFromRoom()
+            }, 5000)
+        }
+        else
+            removeUserFromRoom()
     })
 }
 

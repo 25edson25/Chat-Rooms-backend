@@ -27,7 +27,7 @@ async function findAll(req, res) {
     try {
         const allMessage = await Message.findAll()
         res.json(allMessage)
-    }
+    }   
     catch (err) {
         res.json(err)
     }
