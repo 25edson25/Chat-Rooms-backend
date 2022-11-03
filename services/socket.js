@@ -90,7 +90,6 @@ function handlers (io, socket) {
         const hasUsersConnected = io.sockets.adapter.rooms.get(socket.room.code)? true:false
 
         async function removeUserFromRoom() {
-            console.log("apagando")
             if (!hasUsersConnected) {
                 await Message.destroy({where:{RoomId: socket.room.id}})
                 await Room.destroy({where:{code: socket.room.code}})

@@ -75,17 +75,13 @@ async function roomMessages(req, res) {
         return res.status(401).json({message: "unauthorized"})
 
     const messages = await Message.findAll({
-        attributes: ['id', 'message',
-            [sequelize.literal('Sender.name'), 'senderName'],
-            [sequelize.literal('Sender.id'), 'senderId'],
-            ['createdAt', 'hour']
-        ],
+        attributes:
+            ['id', 'message', ['createdAt', 'hour']],
         where: {RoomId: person.RoomId},
         include: {
             model: Person, as: 'Sender',
-            attributes: []
+            attributes: ['name', 'id']
         },
-        raw: true
     })
 
     res.json(messages)

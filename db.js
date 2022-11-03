@@ -7,7 +7,7 @@ const dbHost = process.env.DB_HOST
 const dbPassword = process.env.DB_PASSWORD
 
 const sequelize = new Sequelize(dbName, dbUser, dbPassword, {
-    dialect: 'mysql',
+    dialect: 'postgres',
     host: dbHost})
 
 module.exports = sequelize
