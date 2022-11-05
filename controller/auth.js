@@ -5,8 +5,6 @@ const {Person} = require('../models/index')
 
 async function login (req, res) {
     const findedPerson = await Person.findOne({where: {email: req.body.email}})
-    console.log(findedPerson)
-    console.log(!findedPerson)
 
     if (!findedPerson) 
         return res.status(404).json({message: "user not found"})
