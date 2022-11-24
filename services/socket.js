@@ -6,7 +6,7 @@ const generateCode = require('../services/generateCode')
 function verifySocket (socket, next) {
     const token = socket.handshake.auth.token.split(" ")[1]
     const code = socket.handshake.query.code
-    const password = socket.handshake.query.password
+    const password = socket.handshake.query.password || null
     const roomName = socket.handshake.query.name
 
     jwt.verify(token, process.env.SECRET, async (err, decoded) => {
