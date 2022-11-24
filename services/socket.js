@@ -56,11 +56,13 @@ var timeoutId;
 function handlers (io, socket) {
     socket.join(socket.room.code)
 
-    io.to(socket.room.code).emit('has_entered', {
-        message: `${socket.person.name} has entered the room`,
-        senderName: socket.person.name,
-        senderId: socket.person.id,
-        roomCode: socket.room.code
+    socket.on('callbacks_setted', ()=> {
+        io.to(socket.room.code).emit('has_entered', {
+            message: `${socket.person.name} has entered the room`,
+            senderName: socket.person.name,
+            senderId: socket.person.id,
+            roomCode: socket.room.code
+        })
     })
 
     socket.on('message', async (message) => {
